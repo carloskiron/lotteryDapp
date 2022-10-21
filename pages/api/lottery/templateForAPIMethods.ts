@@ -1,4 +1,6 @@
 import Cors from "cors";
+import { ILottery } from "../../../services/ILottery";
+import { LotteryService } from "../../../services/LotteryService";
 
 // Initializing the cors middleware
 const cors = Cors({
@@ -24,11 +26,14 @@ async function handler(req, res) {
   await runMiddleware(req, res, cors);
 
   //check the expected method
-  if (req.method === "POST") {
+  if (req.method === "POST") { // or GET, PUT, DELETE ...
 
     const {var1, var2} = req.body;
 
+    //get the service instance
+    const instance = container.resolve(LotteryService) as ILottery;
     //do something
+    // for example: return res.status(201).json(await instance.doSomething(var1, var2, ...));
 
     return res.status(200).json({
          //json attributes

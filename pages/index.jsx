@@ -2,13 +2,8 @@ import { ethers } from "ethers";
 import Head from "next/head";
 import { useEffect, useState } from "react";
 import { Container, Row, Card, Button } from "react-bootstrap";
-import ProposalList from "../components/proposalList.jsx";
 
 export default function Home() {
-  const [proposals, setProposals] = useState([]);
-  const [name, setName] = useState("");
-  const [tokensMinted, setTokenMinted] = useState(false);
-  const [loadingProposals, setLoadingProposals] = useState(true);
 
   const [isConnected, setIsConnected] = useState(false);
   const [signer, setSigner] = useState(undefined);
@@ -29,43 +24,10 @@ export default function Home() {
     }
   }
 
-  const loadProposals = async () => {
-    const result = await fetch("/api/tokenizedBallot/getProposals");
-    const data = await result.json();
-    setProposals(data);
-    setLoadingProposals(false);
-  };
-  const requestTokens = async () => {
-    if (!isConnected || !signer) {
-      return;
-    }
-    const message = JSON.stringify({ name });
-    const signature = await signer.signMessage(message);
-    const result = await fetch("/api/tokenizedBallot/claimTokens", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        message,
-        signature,
-      }),
-    });
-    const data = await result.json();
-    setTokenMinted(data.result);
-  };
-
-  const handleChange = (event) => {
-    setName(event.target.value);
-  };
-
-  useEffect(() => {
-    connect();
-    loadProposals();
-  }, []);
-
   return (
     <Container className="md-container">
       <Head>
-        <title>Tokenized Ballot Dapp</title>
+        <title>Lottery Dapp</title>
         <link rel="icon" href="/favicon-32x32.png" />
       </Head>
       <Container>
@@ -78,11 +40,8 @@ export default function Home() {
               <Card.Body>
                 <Card.Title>Proposals</Card.Title>
                 <Card.Text>
-                  {loadingProposals
-                    ? "Loading proposals..."
-                    : "Current voting proposals:"}
+                  Current voting proposals:
                 </Card.Text>
-                {!loadingProposals && <ProposalList proposals={proposals} />}
               </Card.Body>
             </Card>
             <Card className="sml-card">
@@ -96,22 +55,7 @@ export default function Home() {
             <Card className="sml-card">
               <Card.Body>
                 <Card.Title>Voting tokens</Card.Title>
-                <Card.Text>Request voting tokens.</Card.Text>
-                {!tokensMinted && (
-                  <form>
-                    <label>
-                      Name:
-                      <input type="text" value={name} onChange={handleChange} />
-                    </label>
-                    <Button
-                      variant="primary"
-                      type="button"
-                      onClick={requestTokens}
-                    >
-                      Mint &rarr;
-                    </Button>
-                  </form>)}
-                  {tokensMinted && <p>Tokens have been sent your way!</p>}
+                <Card.Text>Request voting tokens</Card.Text>
               </Card.Body>
             </Card>
             <Card className="sml-card">
@@ -129,7 +73,7 @@ export default function Home() {
 
       <footer className="cntr-footer">
         <a
-          href="https://vercel.com?filter=next.js&utm_source=github&utm_medium=example&utm_campaign=next-example"
+          href="#"
           target="_blank"
           rel="noopener noreferrer"
         >

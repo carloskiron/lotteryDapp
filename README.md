@@ -1,4 +1,4 @@
-# TokenizedBallot - full stack application
+# Lottery - full stack dapp
 
 ## Start with
 ```bash
