@@ -1,3 +1,3 @@
-export interface ITokenizedBallotService {
+export interface ILotteryService {
   
 }
