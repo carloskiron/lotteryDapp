@@ -24,6 +24,10 @@ export default function Home() {
     }
   }
 
+  useEffect(() => {
+    connect();
+  }, []);
+
   return (
     <Container className="md-container">
       <Head>
@@ -32,7 +36,7 @@ export default function Home() {
       </Head>
       <Container>
         <h1>
-          Welcome to <a href="#">Tokenized Ballot</a>
+          Welcome to <a href="#"> awesome lottery</a>
         </h1>
         <Container>
           <Row className="justify-content-md-between">
