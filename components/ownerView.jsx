@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Container, Row, Card, Button } from "react-bootstrap";
-import CommonView from "./CommonView";
+import CommonView from "./commonView";
 
 export default function OwnerView({ signer, lotteryService }) {
 
