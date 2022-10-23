@@ -3,12 +3,14 @@ import Head from "next/head";
 import { useEffect, useState } from "react";
 import { Container, Row, Card, Button } from "react-bootstrap";
 import {container} from "tsyringe";
+import OwnerView from "../components/ownerView";
+import PlayerView from "../components/playerView";
 import { LotteryService } from "../services/LotteryService";
 
 export default function Home() {
 
    //get the service instance
-  const instance = container.resolve(LotteryService);
+  const lotteryServiceInstance = container.resolve(LotteryService);
   const [isConnected, setIsConnected] = useState(false);
   const [signer, setSigner] = useState(undefined);
   const [isOwner, setIsOwner] = useState(false);
@@ -21,7 +23,7 @@ export default function Home() {
         setIsConnected(true);
         const provider = new ethers.providers.Web3Provider(window.ethereum);
         setSigner(provider.getSigner());
-        setIsOwner( await instance.isOwner(provider.getSigner()) );
+        setIsOwner( await lotteryServiceInstance.isOwner(provider.getSigner()) );
       } catch (e) {
         console.log(e);
       }
@@ -44,43 +46,9 @@ export default function Home() {
         <h1>
           Welcome to <a href="#"> awesome lottery</a>
         </h1>
-        <Container>
-          <Row className="justify-content-md-between">
-            <Card className="sml-card">
-              <Card.Body>
-                <Card.Title>Proposals</Card.Title>
-                <Card.Text>
-                  Current voting proposals:
-                </Card.Text>
-              </Card.Body>
-            </Card>
-            <Card className="sml-card">
-              <Card.Body>
-                <Card.Title>Recent votes</Card.Title>
-                <Card.Text>Last on-chain votes:</Card.Text>
-              </Card.Body>
-            </Card>
-          </Row>
-          <Row className="justify-content-md-between">
-            <Card className="sml-card">
-              <Card.Body>
-                <Card.Title>Voting tokens</Card.Title>
-                <Card.Text>Request voting tokens</Card.Text>
-              </Card.Body>
-            </Card>
-            <Card className="sml-card">
-              <Card.Body>
-                <Card.Title>Vote</Card.Title>
-                <Card.Text>Cast your vote!</Card.Text>
-                <Button variant="primary" href="#">
-                  Vote &rarr;
-                </Button>
-              </Card.Body>
-            </Card>
-          </Row>
-        </Container>
+        {isOwner ? <OwnerView signer={signer} lotteryService={lotteryServiceInstance} /> : 
+        <PlayerView signer={signer} lotteryService={lotteryServiceInstance} />}
       </Container>
-
       <footer className="cntr-footer">
         <a
           href="#"
