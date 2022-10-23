@@ -2,11 +2,16 @@ import { ethers } from "ethers";
 import Head from "next/head";
 import { useEffect, useState } from "react";
 import { Container, Row, Card, Button } from "react-bootstrap";
+import {container} from "tsyringe";
+import { LotteryService } from "../services/LotteryService";
 
 export default function Home() {
 
+   //get the service instance
+  const instance = container.resolve(LotteryService);
   const [isConnected, setIsConnected] = useState(false);
   const [signer, setSigner] = useState(undefined);
+  const [isOwner, setIsOwner] = useState(false);
 
   async function connect() {
     console.info("connecting to metamask");
@@ -16,6 +21,7 @@ export default function Home() {
         setIsConnected(true);
         const provider = new ethers.providers.Web3Provider(window.ethereum);
         setSigner(provider.getSigner());
+        setIsOwner( await instance.isOwner(provider.getSigner()) );
       } catch (e) {
         console.log(e);
       }
