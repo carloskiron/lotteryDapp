@@ -5,6 +5,7 @@ import CommonView from "./commonView";
 export default function OwnerView({ signer, lotteryService }) {
 
     const [duration, setDuration] = useState();
+    const [amountToWithdraw, setAmountToWithdraw] = useState(0);
 
     return (
         <Container>
@@ -41,9 +42,9 @@ export default function OwnerView({ signer, lotteryService }) {
                                 placeholder="Amount to withdraw"
                                 aria-label="Amount to withdraw"
                                 aria-describedby="basic-addon2"
-                                onChange={(e) => console.log(e.target.value)}
+                                onChange={(e) => setAmountToWithdraw(e.target.value)}
                             />
-                            <Button variant="primary" id="button-addon2">
+                            <Button variant="primary" id="button-addon2" disabled={!amountToWithdraw || amountToWithdraw <= 0}>
                                 Withdraw &rarr;
                             </Button>
                         </InputGroup>
