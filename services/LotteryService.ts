@@ -30,11 +30,6 @@ export class LotteryService implements ILotteryService {
       LOTTERY_ABI,
       this.provider
     );
-    /*const private_key = process.env.PRIVATE_KEY;
-    const wallet = new ethers.Wallet(private_key, this.provider);
-    const signer = wallet.connect(this.provider);
-    this.lotteryTokenSignedContract = this.lotteryTokenContract.connect(signer);
-    this.lotterySignedContract = this.lotteryContract.connect(signer);*/
   }
 
   async isOwner(signer: ethers.Signer) {
@@ -98,4 +93,45 @@ export class LotteryService implements ILotteryService {
     const prize = ethers.utils.formatEther(prizeBN);
     return prize;
   }
+
+  async tokenBalance(signer: ethers.Signer){
+    
+  }
+
+  async ethBalance(signer: ethers.Signer){
+    
+  }
+
+  async startLottery(duration: number, signer: ethers.Signer){
+    
+  }
+
+  async ownerBalance(signer: ethers.Signer){
+    
+  }
+
+  async prizeBalance(signer: ethers.Signer){
+    
+  }
+
+  async ownerWithdraw(amount: number, signer: ethers.Signer){
+    
+  }
+
+  async prizeWithdraw(amount: number, signer: ethers.Signer){
+    
+  }
+
+  async closeLottery(signer: ethers.Signer){
+    
+  }
+
+  async buyTokens(amount: number, signer: ethers.Signer){
+    
+  }
+
+  async burnTokens(amount: number, signer: ethers.Signer){
+    
+  }
+  
 }

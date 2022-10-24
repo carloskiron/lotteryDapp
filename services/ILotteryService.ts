@@ -8,4 +8,7 @@ export interface ILotteryService {
   burnTokens(signer: ethers.Signer, amount: number): Promise<string>;
   claimPrize(signer: ethers.Signer, amount: number): Promise<string>;
   displayPrize(signer: ethers.Signer): Promise<string>;
+  ethBalance(signer: any): any;
+  startLottery(duration: number, signer: any): any;
+  ownerBalance(signer: any): any;
 }

@@ -2,26 +2,62 @@ import { ethers } from "ethers";
 import Head from "next/head";
 import { useEffect, useState } from "react";
 import { Container, Row, Card, Button } from "react-bootstrap";
-import {container} from "tsyringe";
+import { container } from "tsyringe";
+import OwnerView from "../components/ownerView";
+import PlayerView from "../components/playerView";
 import { LotteryService } from "../services/LotteryService";
 
 export default function Home() {
 
-   //get the service instance
-  const instance = container.resolve(LotteryService);
+  //get the service instance
+  const lotteryServiceInstance = container.resolve(LotteryService);
   const [isConnected, setIsConnected] = useState(false);
   const [signer, setSigner] = useState(undefined);
+  const [provider, setProvider] = useState(undefined);
+  const [isSupportedNetwork, setIsSupportedNetwork] = useState(true);
   const [isOwner, setIsOwner] = useState(false);
+  const [hasMetaMask, setHasMetaMask]= useState(true);
+
+
+  const onChainChanged = (chainId) => {
+    // Handle the new chain.
+    // Correctly handling chain changes can be complicated.
+    // We recommend reloading the page unless you have good reason not to.
+    setIsConnected(false);
+    window.location.reload();
+  }
+
+  const onaAccountsChanged = (chainId) => {
+    // Handle the new chain.
+    // Correctly handling chain changes can be complicated.
+    // We recommend reloading the page unless you have good reason not to.
+    setIsConnected(false);
+    window.location.reload();
+  }
 
   async function connect() {
+    
+    if(!window?.ethereum?.isMetaMask) setHasMetaMask(false);
+
     console.info("connecting to metamask");
     if (typeof window.ethereum !== "undefined") {
       try {
-        await ethereum.request({ method: "eth_requestAccounts" });
-        setIsConnected(true);
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
-        setSigner(provider.getSigner());
-        setIsOwner( await instance.isOwner(provider.getSigner()) );
+        const chainId = await ethereum.request({ method: 'eth_chainId' });
+        const supportedNetwork = chainId === "0x5"; //Goerli
+        setIsSupportedNetwork(supportedNetwork);
+        if (supportedNetwork) {
+          await ethereum.request({ method: "eth_requestAccounts" });
+          const provider = new ethers.providers.Web3Provider(window.ethereum);
+          setIsConnected(true);
+          setProvider(provider);
+          setSigner(provider.getSigner());
+          setIsOwner(await lotteryServiceInstance.isOwner(provider.getSigner()));
+        }
+
+        ethereum.on('accountsChanged', onaAccountsChanged);
+
+        ethereum.on('chainChanged', onChainChanged);
+
       } catch (e) {
         console.log(e);
       }
@@ -32,6 +68,10 @@ export default function Home() {
 
   useEffect(() => {
     connect();
+    return () => {
+      ethereum.removeListener('accountsChanged', onaAccountsChanged);
+      ethereum.removeListener('chainChanged', onChainChanged);
+    };
   }, []);
 
   return (
@@ -44,43 +84,13 @@ export default function Home() {
         <h1>
           Welcome to <a href="#"> awesome lottery</a>
         </h1>
-        <Container>
-          <Row className="justify-content-md-between">
-            <Card className="sml-card">
-              <Card.Body>
-                <Card.Title>Proposals</Card.Title>
-                <Card.Text>
-                  Current voting proposals:
-                </Card.Text>
-              </Card.Body>
-            </Card>
-            <Card className="sml-card">
-              <Card.Body>
-                <Card.Title>Recent votes</Card.Title>
-                <Card.Text>Last on-chain votes:</Card.Text>
-              </Card.Body>
-            </Card>
-          </Row>
-          <Row className="justify-content-md-between">
-            <Card className="sml-card">
-              <Card.Body>
-                <Card.Title>Voting tokens</Card.Title>
-                <Card.Text>Request voting tokens</Card.Text>
-              </Card.Body>
-            </Card>
-            <Card className="sml-card">
-              <Card.Body>
-                <Card.Title>Vote</Card.Title>
-                <Card.Text>Cast your vote!</Card.Text>
-                <Button variant="primary" href="#">
-                  Vote &rarr;
-                </Button>
-              </Card.Body>
-            </Card>
-          </Row>
-        </Container>
+        {isConnected && <>
+          {isOwner && isSupportedNetwork ? <OwnerView signer={signer} lotteryService={lotteryServiceInstance} /> :
+            isSupportedNetwork && <PlayerView signer={signer} lotteryService={lotteryServiceInstance} />}
+        </>}
+        {!hasMetaMask && <div className="alert alert-danger" role="alert"> You need Metamask to use this app.</div>}
+        {!isSupportedNetwork && <div className="alert alert-danger" role="alert"> Awesome lottery is currently in beta. Only available on Goerli Tesnet. Change your metamask network!</div>}
       </Container>
-
       <footer className="cntr-footer">
         <a
           href="#"
