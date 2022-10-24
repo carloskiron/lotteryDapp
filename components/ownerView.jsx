@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
-import { Container, Row, Card, Button } from "react-bootstrap";
+import { Container, Row, Card, Button, InputGroup, Form } from "react-bootstrap";
 import CommonView from "./commonView";
 
 export default function OwnerView({ signer, lotteryService }) {
+
+    const [duration, setDuration] = useState();
 
     return (
         <Container>
@@ -11,13 +13,41 @@ export default function OwnerView({ signer, lotteryService }) {
                     <Card.Body>
                         <Card.Title>Start Lottery</Card.Title>
                         <Card.Text>
+                            Enter a duration in seconds to open bets.
                         </Card.Text>
+                        <InputGroup className="mb-3">
+                            <Form.Control
+                                type="number"
+                                placeholder="Duration"
+                                aria-label="Duration"
+                                aria-describedby="basic-addon2"
+                                onChange={(e) => setDuration(e.target.value)}
+                            />
+                            <Button variant="primary" id="button-addon2" disabled={!duration || duration < 1}>
+                                Open bets &rarr;
+                            </Button>
+                        </InputGroup>
                     </Card.Body>
                 </Card>
                 <Card className="sml-card">
                     <Card.Body>
                         <Card.Title>Owner Withdraw</Card.Title>
-                        <Card.Text></Card.Text>
+                        <Card.Text>
+                            Current balance (# of tokens): 0.00
+                        </Card.Text>
+                        <InputGroup className="mb-3">
+                            <Form.Control
+                                type="number"
+                                placeholder="Amount to withdraw"
+                                aria-label="Amount to withdraw"
+                                aria-describedby="basic-addon2"
+                                onChange={(e) => console.log(e.target.value)}
+                            />
+                            <Button variant="primary" id="button-addon2">
+                                Withdraw &rarr;
+                            </Button>
+                        </InputGroup>
+
                     </Card.Body>
                 </Card>
             </Row>
