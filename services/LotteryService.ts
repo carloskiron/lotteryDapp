@@ -32,9 +32,66 @@ export class LotteryService implements ILotteryService {
     );
   }
 
-  async isOwner(signer: ethers.Signer){
+  async isOwner(signer: ethers.Signer) {
     const owner = await this.lotteryContract.connect(signer).owner();
-    return owner === await signer.getAddress();
+    return owner === (await signer.getAddress());
+  }
+
+  async buyTokens(signer: ethers.Signer, amount: number) {
+    const tx = await this.lotteryTokenContract.connect(signer).purchaseTokens({
+      value: ethers.utils.parseEther(`${amount}`),
+    });
+    const receipt = await tx.wait();
+    return receipt.transactionHash;
+  }
+
+  async bet(signer: ethers.Signer, amount: number) {
+    const amountBN = ethers.utils.parseEther(`${amount}`);
+    const allowTx = await this.lotteryTokenContract
+      .connect(signer)
+      .approve(this.lotteryContract.address, amountBN);
+    await allowTx.wait();
+    const tx = await this.lotteryContract.connect(signer).betMany(amount);
+    const receipt = await tx.wait();
+    return receipt.transactionHash;
+  }
+
+  async ownerWithdraw(signer: ethers.Signer, amount: number) {
+    const tx = await this.lotteryContract
+      .connect(signer)
+      .ownerWithdraw(ethers.utils.parseEther(`${amount}`));
+    const receipt = await tx.wait();
+    return receipt.transactionHash;
+  }
+
+  async burnTokens(signer: ethers.Signer, amount: number) {
+    const amountBN = ethers.utils.parseEther(`${amount}`);
+    const allowTx = await this.lotteryTokenContract
+      .connect(signer)
+      .approve(this.lotteryContract.address, amountBN);
+    const receiptAllow = await allowTx.wait();
+    console.info(`Allowance confirmed (${receiptAllow.transactionHash})\n`);
+    const tx = await this.lotteryContract
+      .connect(signer)
+      .returnTokens(amountBN);
+    const receipt = await tx.wait();
+    return receipt.transactionHash;
+  }
+
+  async claimPrize(signer: ethers.Signer, amount: number) {
+    const amountBN = ethers.utils.parseEther(`${amount}`);
+    const tx = await this.lotteryContract
+      .connect(signer)
+      .prizeWithdraw(amountBN);
+    const receipt = await tx.wait();
+    return receipt.transactionHash;
+  }
+
+  async displayPrize(signer: ethers.Signer) {
+    const signerAddress = await signer.getAddress();
+    const prizeBN = await this.lotteryContract.prize(signerAddress);
+    const prize = ethers.utils.formatEther(prizeBN);
+    return prize;
   }
 
   async tokenBalance(signer: ethers.Signer){
