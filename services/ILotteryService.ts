@@ -11,4 +11,6 @@ export interface ILotteryService {
   ethBalance(signer: any): any;
   startLottery(duration: number, signer: any): any;
   ownerBalance(signer: any): any;
+  closeLottery(signer: ethers.Signer): any;
+  tokenBalance(signer: ethers.Signer): any;
 }

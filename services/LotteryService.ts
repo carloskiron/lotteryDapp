@@ -94,44 +94,25 @@ export class LotteryService implements ILotteryService {
     return prize;
   }
 
-  async tokenBalance(signer: ethers.Signer){
-    
+  async tokenBalance(signer: ethers.Signer) {
+
   }
 
-  async ethBalance(signer: ethers.Signer){
-    
+  async ethBalance(signer: ethers.Signer) {
+
   }
 
-  async startLottery(duration: number, signer: ethers.Signer){
-    
+  async startLottery(duration: number, signer: ethers.Signer) {
+
   }
 
-  async ownerBalance(signer: ethers.Signer){
-    
+  async ownerBalance(signer: ethers.Signer) {
+
   }
 
-  async prizeBalance(signer: ethers.Signer){
-    
+
+  async closeLottery(signer: ethers.Signer) {
+
   }
 
-  async ownerWithdraw(amount: number, signer: ethers.Signer){
-    
-  }
-
-  async prizeWithdraw(amount: number, signer: ethers.Signer){
-    
-  }
-
-  async closeLottery(signer: ethers.Signer){
-    
-  }
-
-  async buyTokens(amount: number, signer: ethers.Signer){
-    
-  }
-
-  async burnTokens(amount: number, signer: ethers.Signer){
-    
-  }
-  
 }
